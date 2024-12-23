@@ -1,17 +1,16 @@
 package dev.brachtendorf.graphics;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
-
-import javafx.scene.paint.Color;
 
 /**
  * Utility class to access pixel data in a fraction of the time required by the
  * native JDK methods.
- * 
+ *
  * <p>
  * Additionally support different color spaces and bulk operations
- * 
+ *
  * @author Kilian
  *
  */
@@ -21,7 +20,7 @@ public interface FastPixel {
 
 	/**
 	 * Return a fast pixel instance mapped to the buffered image type
-	 * 
+	 *
 	 * @param bufferedImage the buffered image to create a fast pixel instance for
 	 * @return an instantiated FastPixelObject
 	 */
@@ -38,7 +37,7 @@ public interface FastPixel {
 				return new FastPixelInt(bufferedImage);
 			default:
 				LOGGER.finest("No fast implementation available for " + bufferedImage.getType()
-						+ ". Fallback to slow default variant.");
+					+ ". Fallback to slow default variant.");
 				return new FastPixelSlowDefault(bufferedImage);
 			// throw new UnsupportedOperationException(
 			// "The image type is currently not supported: " + bufferedImage.getType());
@@ -52,7 +51,7 @@ public interface FastPixel {
 	 * call {@link #setReplaceOpaqueColors(int, int, int, int, int)} and set a color
 	 * which will be returned in case that the pixel has an alpha value smaller than
 	 * the specified threshold
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @return true if opaque colors are replaced by a user defined color
 	 */
@@ -63,7 +62,7 @@ public interface FastPixel {
 	 * specified threshold. The pixel value is replaced for all get operations,
 	 * including luminosity calculation. Set operations are not touched by this
 	 * setting.
-	 * 
+	 *
 	 * @param alphaThreshold replace each pixel which has an alpha value smaller or
 	 *                       equal to the threshold in the range of [0-255]. A value
 	 *                       of will disabled color replacement
@@ -84,7 +83,7 @@ public interface FastPixel {
 	 * specified threshold. The pixel value is replaced for all get operations,
 	 * including luminosity calculation. Set operations are not touched by this
 	 * setting.
-	 * 
+	 *
 	 * @param alphaThreshold   replace each pixel which has an alpha value smaller
 	 *                         or equal to the threshold in the range of [0-255]. A
 	 *                         value of will disabled color replacement
@@ -92,23 +91,7 @@ public interface FastPixel {
 	 */
 	default void setReplaceOpaqueColors(int alphaThreshold, java.awt.Color replacementColor) {
 		setReplaceOpaqueColors(alphaThreshold, replacementColor.getRed(), replacementColor.getGreen(),
-				replacementColor.getBlue(), replacementColor.getAlpha());
-	}
-
-	/**
-	 * Replace all pixels values in the image which have an alpha &lt; than the
-	 * specified threshold. The pixel value is replaced for all get operations,
-	 * including luminosity calculation. Set operations are not touched by this
-	 * setting.
-	 * 
-	 * @param alphaThreshold   replace each pixel which has an alpha value smaller
-	 *                         or equal to the threshold in the range of [0-255]. A
-	 *                         value of will disabled color replacement
-	 * @param replacementColor the color which will be returned in case of an opaque
-	 *                         pixel
-	 */
-	default void setReplaceOpaqueColors(int alphaThreshold, Color replacementColor) {
-		setReplaceOpaqueColors(alphaThreshold, ColorUtil.fxToAwtColor(replacementColor));
+			replacementColor.getBlue(), replacementColor.getAlpha());
 	}
 
 	int getRGB(int index);
@@ -118,7 +101,7 @@ public interface FastPixel {
 	 * are only 8-bits of precision for each color component in the returned data
 	 * when using this method. An ArrayOutOfBoundsException may be thrown if the
 	 * coordinates are not in bounds.
-	 * 
+	 *
 	 * @param x the X coordinate of the pixel from which to get the pixel in the
 	 *          default RGB color model
 	 * @param y the Y coordinate of the pixel from which to get the pixel in the
@@ -136,7 +119,7 @@ public interface FastPixel {
 	 * color model(TYPE_INT_ARGB). There are only 8-bits of precision for each color
 	 * component in the returned data when using this method. An
 	 * ArrayOutOfBoundsException may be thrown if the coordinates are not in bounds.
-	 * 
+	 *
 	 * @return a 2d integer array containing the argb values of the image
 	 * @since 1.3.0 com.github.kilianB
 	 */
@@ -144,7 +127,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the alpha value of the specified pixel
-	 * 
+	 *
 	 * @param index the offset in the underlying array
 	 * @return the alpha value in range [0-255] or -1 if alpha is not supported
 	 * @since 1.5.0 com.github.kilianB
@@ -153,7 +136,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the alpha value of the specified pixel
-	 * 
+	 *
 	 * @param x The x coordinate of the images' pixel
 	 * @param y The y coordinate of the images' pixel
 	 * @return the alpha value in range [0-255] or -1 if alpha is not supported
@@ -166,7 +149,7 @@ public interface FastPixel {
 	/**
 	 * Get the alpha component of the entire image mapped to a 2d array representing
 	 * the x and y coordinates of the pixel.
-	 * 
+	 *
 	 * @return the alpha values or null if alpha is not supported
 	 * @since 1.3.0 com.github.kilianB
 	 */
@@ -175,7 +158,7 @@ public interface FastPixel {
 	/**
 	 * Set the alpha value of the specified pixel. This method is a NOP if alpha is
 	 * not supported.
-	 * 
+	 *
 	 * @param x        The x coordinate of the images' pixel
 	 * @param y        The y coordinate of the images' pixel
 	 * @param newAlpha the new alpha value in range [0-255]
@@ -187,7 +170,7 @@ public interface FastPixel {
 
 	/**
 	 * Set the alpha value. This method is a NOP if alpha is not supported.
-	 * 
+	 *
 	 * @param index    the offset of the underlying array
 	 * @param newAlpha the new alpha value in range [0-255]
 	 * @since 1.5.0 com.github.kilianB
@@ -196,7 +179,7 @@ public interface FastPixel {
 
 	/**
 	 * Set new alpha values for the entire picture
-	 * 
+	 *
 	 * @param newAlpha red values in range [0-255]
 	 * @since 1.4.5 com.github.kilianB
 	 */
@@ -204,7 +187,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the red value at the specified offset
-	 * 
+	 *
 	 * @param index offset of ther underlying array
 	 * @return the red value in range [0-255]
 	 * @since 1.5.0 com.github.kilianB
@@ -213,7 +196,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the red value of the specified pixel
-	 * 
+	 *
 	 * @param x The x coordinate of the images' pixel
 	 * @param y The y coordinate of the images' pixel
 	 * @return the red value in range [0-255]
@@ -226,7 +209,7 @@ public interface FastPixel {
 	/**
 	 * Get the red component of the entire image mapped to a 2d array representing
 	 * the x and y coordinates of the pixel.
-	 * 
+	 *
 	 * @return the red values in range [0-255]
 	 * @since 1.3.0 com.github.kilianB
 	 */
@@ -234,7 +217,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the red component of the entire image mapped to a 1d array
-	 * 
+	 *
 	 * @return the red values in range [0-255]
 	 * @since 1.5.5 com.github.kilianB
 	 */
@@ -242,7 +225,7 @@ public interface FastPixel {
 
 	/**
 	 * Set the red value of the specified pixel
-	 * 
+	 *
 	 * @param x      The x coordinate of the images' pixel
 	 * @param y      The y coordinate of the images' pixel
 	 * @param newRed the new red value in range [0-255]
@@ -254,7 +237,7 @@ public interface FastPixel {
 
 	/**
 	 * Set the red value at the specified offset
-	 * 
+	 *
 	 * @param index  the offset of the underlying array
 	 * @param newRed the new red value in range [0-255]
 	 * @since 1.5.0 com.github.kilianB
@@ -263,7 +246,7 @@ public interface FastPixel {
 
 	/**
 	 * Set new red values for the entire picture
-	 * 
+	 *
 	 * @param newRed red values in range [0-255]
 	 * @since 1.4.5 com.github.kilianB
 	 */
@@ -271,7 +254,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the green value of the specified offset
-	 * 
+	 *
 	 * @param index the offset of the underlying array
 	 * @return the green value in range [0-255]
 	 * @since 1.5.0 com.github.kilianB
@@ -280,7 +263,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the green value of the specified pixel
-	 * 
+	 *
 	 * @param x The x coordinate of the images' pixel
 	 * @param y The y coordinate of the images' pixel
 	 * @return the green value in range [0-255]
@@ -292,7 +275,7 @@ public interface FastPixel {
 
 	/**
 	 * Set the green value of the specified pixel
-	 * 
+	 *
 	 * @param x        The x coordinate of the images' pixel
 	 * @param y        The y coordinate of the images' pixel
 	 * @param newGreen the new green value in range [0-255]
@@ -304,7 +287,7 @@ public interface FastPixel {
 
 	/**
 	 * Set the green value at the specified offset
-	 * 
+	 *
 	 * @param index    the offset of the underlying array
 	 * @param newGreen the new green value in range [0-255]
 	 * @since 1.5.0 com.github.kilianB
@@ -313,7 +296,7 @@ public interface FastPixel {
 
 	/**
 	 * Set new green values for the entire picture
-	 * 
+	 *
 	 * @param newGreen red values in range [0-255]
 	 * @since 1.4.5 com.github.kilianB
 	 */
@@ -322,7 +305,7 @@ public interface FastPixel {
 	/**
 	 * Get the green component of the entire image mapped to a 2d array representing
 	 * the x and y coordinates of the pixel.
-	 * 
+	 *
 	 * @return the green values in range [0-255]
 	 * @since 1.3.0 com.github.kilianB
 	 */
@@ -330,7 +313,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the green component of the entire image mapped to a 1d array
-	 * 
+	 *
 	 * @return the green values in range [0-255]
 	 * @since 1.5.5 com.github.kilianB
 	 */
@@ -338,7 +321,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the blue value of the specified offset
-	 * 
+	 *
 	 * @param index the offset of the underlying array
 	 * @return the green value in range [0-255]
 	 * @since 1.5.0 com.github.kilianB
@@ -347,7 +330,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the blue value of the specified pixel
-	 * 
+	 *
 	 * @param x The x coordinate of the images' pixel
 	 * @param y The y coordinate of the images' pixel
 	 * @return the blue value in range [0-255]
@@ -359,7 +342,7 @@ public interface FastPixel {
 
 	/**
 	 * Set the blue value of the specified pixel
-	 * 
+	 *
 	 * @param x       The x coordinate of the images' pixel
 	 * @param y       The y coordinate of the images' pixel
 	 * @param newBlue the new blue value in range [0-255]
@@ -374,7 +357,7 @@ public interface FastPixel {
 	/**
 	 * Get the blue component of the entire image mapped to a 2d array representing
 	 * the x and y coordinates of the image.
-	 * 
+	 *
 	 * @return the blue values in range [0-255]
 	 * @since 1.3.0 com.github.kilianB
 	 */
@@ -382,7 +365,7 @@ public interface FastPixel {
 
 	/**
 	 * Get the blue component of the entire image mapped to a 1d array
-	 * 
+	 *
 	 * @return the red values in range [0-255]
 	 * @since 1.5.5 com.github.kilianB
 	 */
@@ -390,7 +373,7 @@ public interface FastPixel {
 
 	/**
 	 * Set new blue values for the entire picture
-	 * 
+	 *
 	 * @param newBlue red values in range [0-255]
 	 * @since 1.4.5 com.github.kilianB
 	 */
@@ -400,12 +383,12 @@ public interface FastPixel {
 
 	/**
 	 * Get the average grayscale at the specified offset
-	 * 
+	 *
 	 * <p>
 	 * Average grayscale: (R+G+B)/3
 	 * <p>
 	 * This
-	 * 
+	 *
 	 * @param index offset of der underlying array
 	 * @return the grayscale values in range [0-255]
 	 * @since 1.5.0 com.github.kilianB
@@ -417,10 +400,10 @@ public interface FastPixel {
 
 	/**
 	 * Get the average grayscale of the specified pixel
-	 * 
+	 *
 	 * <p>
 	 * Average grayscale: (R+G+B)/3
-	 * 
+	 *
 	 * @param x The x coordinate of the images' pixel
 	 * @param y The y coordinate of the images' pixel
 	 * @return the grayscale values in range [0-255]
@@ -433,13 +416,13 @@ public interface FastPixel {
 	/**
 	 * Get the average grayscale of the entire image mapped to a 2d array
 	 * representing the x and y coordinates of the pixel.
-	 * 
+	 *
 	 * <p>
 	 * Average grayscale: (R+G+B)/3
-	 * 
+	 *
 	 * <p>
 	 * Average grayscale: (R+G+B)/3
-	 * 
+	 *
 	 * @return the grayscale values in range [0 - 255]
 	 * @since 1.5.0 com.github.kilianB
 	 */
@@ -447,15 +430,15 @@ public interface FastPixel {
 
 	/**
 	 * Set the gray values at the specified offset
-	 * 
+	 *
 	 * <p>
 	 * Average grayscale: (R+G+B)/3
-	 * 
+	 *
 	 * <p>
 	 * It is up to the inheriting class to decide how the gray value is reflected at
 	 * the value level. If the image is still in rgb or argb mode the value of each
 	 * individual channel will be set to the gray value
-	 * 
+	 *
 	 * @param index        offset of der underlaying array
 	 * @param newGrayValue to set the pixels to range [0 - 255]
 	 * @since 1.5.0 com.github.kilianB
@@ -468,15 +451,15 @@ public interface FastPixel {
 
 	/**
 	 * Set the gray values of the specified pixel image.
-	 * 
+	 *
 	 * <p>
 	 * Average grayscale: (R+G+B)/3
-	 * 
+	 *
 	 * <p>
 	 * It is up to the inheriting class to decide how the gray value is reflected at
 	 * the value level. If the image is still in rgb or argb mode the value of each
 	 * individual channel will be set to the gray value
-	 * 
+	 *
 	 * @param x            The x coordinate of the images' pixel
 	 * @param y            The y coordinate of the images' pixel
 	 * @param newGrayValue to set the pixels to range [0 - 255]
@@ -488,39 +471,40 @@ public interface FastPixel {
 
 	/**
 	 * Set the gray values of the entire image.
-	 * 
+	 *
 	 * <p>
 	 * Average grayscale: (R+G+B)/3
-	 * 
+	 *
 	 * <p>
 	 * It is up to the inheriting class to decide how the gray value is reflected at
 	 * the value level. If the image is still in rgb or argb mode the value of each
 	 * individual channel will be set to the gray value
-	 * 
+	 *
 	 * @param newGrayValue to set the pixels to range [0 - 255]
 	 * @since 1.5.0 com.github.kilianB
 	 */
 	void setAverageGrayscale(int[][] newGrayValue);
 
 	// YCrCb
+
 	/**
 	 * Return the Y(Luma) component of the YCbCr color model for the specified
 	 * offset.
-	 * 
+	 *
 	 * @param index of the underlying array
 	 * @return the luma component in range [0-255]
 	 * @since 1.3.0 com.github.kilianB
 	 */
 	default int getLuma(int index) {
 		int lum = (int) ((getRed(index)) * ColorUtil.LUMA_RED + (getGreen(index)) * ColorUtil.LUMA_GREEN
-				+ (getBlue(index)) * ColorUtil.LUMA_BLUE);
+			+ (getBlue(index)) * ColorUtil.LUMA_BLUE);
 		return lum > 255 ? 255 : lum;
 	}
 
 	/**
 	 * Return the Y(Luma) component of the YCbCr color model for the specified
 	 * pixel.
-	 * 
+	 *
 	 * @param x the x coordinate of the image
 	 * @param y the y coordinate of the image
 	 * @return the luma component in range [0-255]
@@ -533,7 +517,7 @@ public interface FastPixel {
 	/**
 	 * Return the Y(Luma) component of the YCbCr color model for the entire image
 	 * mapped to a 2d array representing the x and y coordinates of the pixel.
-	 * 
+	 *
 	 * @return the luma component in range [0-255]
 	 * @since 1.3.1 com.github.kilianB
 	 */
@@ -542,21 +526,21 @@ public interface FastPixel {
 	/**
 	 * Return the Y(Luma) component of the YCbCr color model fof the entire image
 	 * mapped to a 1d array
-	 * 
+	 *
 	 * @return the luma component in range [0-255]
 	 */
 	int[] getLuma1D();
 
 	default int getCr(int index) {
 		int cr = (int) (getRed(index) * ColorUtil.CR_RED + getGreen(index) * ColorUtil.CR_GREEN
-				+ getBlue(index) * ColorUtil.CR_BLUE);
+			+ getBlue(index) * ColorUtil.CR_BLUE);
 		return cr > 255 ? 255 : cr;
 	}
 
 	/**
 	 * Return the Cr(red-difference) component of the YCbCr color model for the
 	 * specified pixel.
-	 * 
+	 *
 	 * @param x the x coordinate of the image
 	 * @param y the y coordinate of the image
 	 * @return the cr component in range [0-255]
@@ -569,21 +553,21 @@ public interface FastPixel {
 	/**
 	 * Return the Cb(blue-difference) component of the YCbCr color model for the
 	 * specified offset.
-	 * 
+	 *
 	 * @param index offset of the underlying array
 	 * @return the cb component in range [0-255]
 	 * @since 1.5.0 com.github.kilianB
 	 */
 	default int getCb(int index) {
 		int cb = (int) (getRed(index) * ColorUtil.CB_RED + getGreen(index) * ColorUtil.CB_GREEN
-				+ getBlue(index) * ColorUtil.CB_BLUE);
+			+ getBlue(index) * ColorUtil.CB_BLUE);
 		return cb > 255 ? 255 : cb;
 	}
 
 	/**
 	 * Return the Cb(blue-difference) component of the YCbCr color model for the
 	 * specified pixel.
-	 * 
+	 *
 	 * @param x the x coordinate of the image
 	 * @param y the y coordinate of the image
 	 * @return the cb component in range [0-255]
@@ -596,7 +580,7 @@ public interface FastPixel {
 	/**
 	 * Return the hue component (angle) of the HSV color model for the specified
 	 * offset
-	 * 
+	 *
 	 * @param index offset of der underlying array
 	 * @return the hue component in range [0-360]. As defined the hue is 0 for
 	 *         undefined colors (e.g. white or black)
@@ -636,7 +620,7 @@ public interface FastPixel {
 	/**
 	 * Return the hue component (angle) of the HSV color model for the specified
 	 * pixel
-	 * 
+	 *
 	 * @param x the x coordinate of the image
 	 * @param y the y coordinate of the image
 	 * @return the hue component in range [0-360]. As defined the hue is 0 for
@@ -650,12 +634,12 @@ public interface FastPixel {
 	/**
 	 * Return the saturation component of the HSV color model for the specified
 	 * offset
-	 * 
+	 *
 	 * <p>
 	 * Note: Opposed to all other values for the hsb model saturation is returned as
 	 * double in the range of [0-1] instead of [0-255] to allow for a higher
 	 * accuracy.
-	 * 
+	 *
 	 * @param index the offset of the underlying array
 	 * @return the sat component in range [0-1]. As defined the sat is 0 for
 	 *         undefined colors (i.e. black)
@@ -676,12 +660,12 @@ public interface FastPixel {
 	/**
 	 * Return the saturation component of the HSV color model for the specified
 	 * pixel
-	 * 
+	 *
 	 * <p>
 	 * Note: Opposed to all other values for the hsb model saturation is returned as
 	 * double in the range of [0-1] instead of [0-255] to allow for a higher
 	 * accuracy.
-	 * 
+	 *
 	 * @param x the x coordinate of the image
 	 * @param y the y coordinate of the image
 	 * @return the sat component in range [0-1]. As defined the sat is 0 for
@@ -694,7 +678,7 @@ public interface FastPixel {
 
 	/**
 	 * Return the value component of the HSV color model for the specified offset
-	 * 
+	 *
 	 * @param index offset of the udnerlying array
 	 * @return the value component in range [0-255].
 	 * @since 1.5.0 com.github.kilianB
@@ -709,7 +693,7 @@ public interface FastPixel {
 
 	/**
 	 * Return the value component of the HSV color model for the specified pixel
-	 * 
+	 *
 	 * @param x the x coordinate of the image
 	 * @param y the y coordinate of the image
 	 * @return the value component in range [0-255].
@@ -720,14 +704,14 @@ public interface FastPixel {
 
 	/**
 	 * Check if an image supports alpha values
-	 * 
+	 *
 	 * @return true if the image has an alpha channel. false otherwise
 	 */
 	boolean hasAlpha();
 
 	/**
 	 * Map the x and y values to the underlying one dimensional data array
-	 * 
+	 *
 	 * @param x the x coordinate
 	 * @param y the y coordinate
 	 * @return the corresponding 1d array index

@@ -1,8 +1,6 @@
 package dev.brachtendorf.graphics;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
@@ -10,12 +8,6 @@ import java.awt.image.IndexColorModel;
 import java.util.HashMap;
 
 import javax.imageio.ImageTypeSpecifier;
-
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
-import javafx.scene.image.PixelFormat;
-import javafx.scene.image.PixelReader;
-import javafx.scene.paint.Color;
 
 /**
  * @author Kilian
@@ -25,12 +17,12 @@ public class ImageUtil {
 
 	/**
 	 * Resize the buffered image to an arbitrary dimension
-	 * 
+	 *
 	 * <p>
 	 * If a high quality interpolated thumbnail is required
 	 * {@link #createThumbnail(BufferedImage, int, int)} may be more suited.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param source the source image
 	 * @param width  the new width
 	 * @param height the new height
@@ -54,9 +46,9 @@ public class ImageUtil {
 	 * <p>
 	 * Returns a thumbnail of a source image.
 	 * </p>
-	 * 
+	 *
 	 * TODO LGPL LICENSE!!
-	 * 
+	 *
 	 * @param image     the source image
 	 * @param newWidth  the width of the thumbnail
 	 * @param newHeight the height of the thumbnail
@@ -77,7 +69,7 @@ public class ImageUtil {
 
 		if (newWidth >= width || newHeight >= height) {
 			throw new IllegalArgumentException(
-					"newWidth and newHeight cannot" + " be greater than the image" + " dimensions");
+				"newWidth and newHeight cannot" + " be greater than the image" + " dimensions");
 		} else if (newWidth <= 0 || newHeight <= 0) {
 			throw new IllegalArgumentException("newWidth and newHeight must" + " be greater than 0");
 		}
@@ -149,7 +141,7 @@ public class ImageUtil {
 
 	/**
 	 * Convert the image to an image of the new type
-	 * 
+	 *
 	 * @param original the original image to convert
 	 * @param newType  the new type
 	 * @return a copy of the original image with new pixel type
@@ -164,7 +156,7 @@ public class ImageUtil {
 
 	/**
 	 * Convert the image to an image of the new type
-	 * 
+	 *
 	 * @param original the original image to convert
 	 * @param newType  the new type
 	 * @return a copy of the original image with new pixel type
@@ -175,19 +167,7 @@ public class ImageUtil {
 
 	/**
 	 * Calculate the interpolated average color of the image
-	 * 
-	 * @param image the source image
-	 * @return the average color of the image
-	 * @since 1.0.0 com.github.kilianB
-	 */
-	public static Color interpolateColor(Image image) {
-		BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
-		return interpolateColor(bImage);
-	}
-
-	/**
-	 * Calculate the interpolated average color of the image
-	 * 
+	 *
 	 * @param bImage the source image
 	 * @return the average color of the image
 	 * @since 2.0.1
@@ -203,35 +183,16 @@ public class ImageUtil {
 	 * most often occurred in this image. Be aware that calculating the average
 	 * color using this approach is a rather expensive operation.
 	 * <p>
-	 * 
-	 * @param bImage The source image
+	 *
+	 * @param image The source image
 	 * @return the dominant color of this image
 	 * @since 2.0.1
 	 */
-	public static Color dominantColor(BufferedImage bImage) {
-		return dominantColor(SwingFXUtils.toFXImage(bImage, null));
-	}
-
-	/**
-	 * Return the dominant color of this image. The dominant color is the color that
-	 * most often occurred in this image. Be aware that calculating the average
-	 * color using this approach is a rather expensive operation.
-	 * <p>
-	 * 
-	 * @param image The source image
-	 * @return the dominant color of this image
-	 * @since 1.0.0 com.github.kilianB
-	 */
-	public static Color dominantColor(Image image) {
+	public static Color dominantColor(BufferedImage image) {
 
 		HashMap<Integer, Integer> colorCount = new HashMap<>();
 
-		PixelReader pr = image.getPixelReader();
-
-		int[] pixels = new int[(int) (image.getWidth() * image.getHeight())];
-
-		pr.getPixels(0, 0, (int) image.getWidth(), (int) image.getHeight(), PixelFormat.getIntArgbInstance(), pixels, 0,
-				(int) image.getWidth());
+		int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
 
 		for (int argb : pixels) {
 			// Do we even need to put it back in? Can't be simply change the Integer object?
@@ -240,7 +201,7 @@ public class ImageUtil {
 		}
 
 		int argb = colorCount.entrySet().stream().max((entry, entry2) -> entry.getValue().compareTo(entry2.getValue()))
-				.get().getKey().intValue();
+			.get().getKey().intValue();
 
 		return ColorUtil.argbToFXColor(argb);
 	}
@@ -249,31 +210,14 @@ public class ImageUtil {
 	 * Calculate the average color of this image. The average color is determined by
 	 * summing the squared argb component of each pixel and determining the mean
 	 * value of these.
-	 * 
+	 *
 	 * @param image The source image
 	 * @return The average mean color of this image
 	 * @since 2.0.1
 	 */
 	public static Color meanColor(BufferedImage image) {
-		return meanColor(SwingFXUtils.toFXImage(image, null));
-	}
 
-	/**
-	 * Calculate the average color of this image. The average color is determined by
-	 * summing the squared argb component of each pixel and determining the mean
-	 * value of these.
-	 * 
-	 * @param image The source image
-	 * @return The average mean color of this image
-	 * @since 1.0.0 com.github.kilianB
-	 */
-	public static Color meanColor(Image image) {
-
-		PixelReader pr = image.getPixelReader();
-		int[] pixels = new int[(int) (image.getWidth() * image.getHeight())];
-
-		pr.getPixels(0, 0, (int) image.getWidth(), (int) image.getHeight(), PixelFormat.getIntArgbInstance(), pixels, 0,
-				(int) image.getWidth());
+		int[] pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
 
 		double meanAlpha = 0;
 		double meanRed = 0;
@@ -294,14 +238,14 @@ public class ImageUtil {
 		}
 
 		int argbMean = ColorUtil.componentsToARGB((int) Math.sqrt(meanAlpha) * 255, (int) Math.sqrt(meanRed),
-				(int) Math.sqrt(meanGreen), (int) Math.sqrt(meanBlue));
+			(int) Math.sqrt(meanGreen), (int) Math.sqrt(meanBlue));
 
 		return ColorUtil.argbToFXColor(argbMean);
 	}
 
 	/**
 	 * Buffered image types mapped to enum values for easier handling
-	 * 
+	 *
 	 * @author Kilian
 	 *
 	 */
@@ -436,7 +380,7 @@ public class ImageUtil {
 		 * Images with 8 bits per pixel should use the image types
 		 * <code>TYPE_BYTE_INDEXED</code> or <code>TYPE_BYTE_GRAY</code> depending on
 		 * their <code>ColorModel</code>.
-		 * 
+		 *
 		 * <p>
 		 * When color data is stored in an image of this type, the closest color in the
 		 * colormap is determined by the <code>IndexColorModel</code> and the resulting

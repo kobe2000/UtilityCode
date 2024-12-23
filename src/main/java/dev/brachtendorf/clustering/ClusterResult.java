@@ -1,6 +1,6 @@
 package dev.brachtendorf.clustering;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import dev.brachtendorf.clustering.distance.DistanceFunction;
 import dev.brachtendorf.clustering.distance.EuclideanDistance;
 import dev.brachtendorf.graphics.ColorUtil;
 import dev.brachtendorf.mutable.MutableDouble;
-import javafx.scene.paint.Color;
 
 /**
  * @author Kilian
@@ -45,11 +44,11 @@ public class ClusterResult {
 	private HashMap<Integer, MutableDouble> silhouetteCoef = new HashMap<>();
 
 	//Cohesion ...
-	
+
 	//Radius ... diameter
 	//density volume/points
-	
-	
+
+
 	public ClusterResult(int[] clusterIndex, double[][] data) {
 
 		int dimensions = data[0].length;
@@ -163,7 +162,7 @@ public class ClusterResult {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("Observations: ").append(clusterIndex.length).append("\n").append("Number of Clusters: ")
-				.append(numberOfClusters).append("\n");
+			.append(numberOfClusters).append("\n");
 
 		int clusterLength = StringUtil.charsNeeded(numberOfClusters);
 		int obsLength = StringUtil.charsNeeded(clusterIndex.length);
@@ -190,7 +189,7 @@ public class ClusterResult {
 			}
 			silouetteCoeffificient += silhouetteCoef.get(i).getValue();
 			sb.append("] Silhouette Coef: ").append(df.format(silhouetteCoef.get(i).getValue())).append(" SSE:")
-					.append(sseDf.format(sse.get(i).doubleValue())).append("\n");
+				.append(sseDf.format(sse.get(i).doubleValue())).append("\n");
 		}
 
 		sb.append("SSE: " + df.format(sseSum)).append("\n");
@@ -221,7 +220,7 @@ public class ClusterResult {
 			}
 		}
 
-		javafx.scene.paint.Color[] c = ColorUtil.ColorPalette.getPaletteHue(numberOfClusters, Color.BLUE, Color.RED);
+		Color[] c = ColorUtil.ColorPalette.getPaletteHue(numberOfClusters, Color.BLUE, Color.RED);
 
 		// Scale data
 		g.fillRect(0, 0, 700, 700);
@@ -259,11 +258,11 @@ public class ClusterResult {
 	public List<double[]> getCluster(int cluster) {
 		return clusters.get(cluster);
 	}
-	
+
 	public DoubleSummaryStatistics[] getStats(int cluster) {
 		return stats.get(cluster);
 	}
-	
+
 
 	public int[] getClusterData() {
 		return clusterIndex;

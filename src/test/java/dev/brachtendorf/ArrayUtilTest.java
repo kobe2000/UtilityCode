@@ -236,12 +236,12 @@ class ArrayUtilTest {
 		Object[] array = new Object[10];
 		for (int i = 0; i < 10; i++) {
 			if (i % 2 == 0) {
-				array[i] = new javafx.geometry.Point2D(0, 0);
+				array[i] = new Point2D.Float(0, 0);
 			} else {
 				Object[] o = new Object[4];
 				array[i] = o;
 				for (int j = 0; j < 4; j++) {
-					o[j] = new javafx.geometry.Point2D(0, 0);
+					o[j] = new Point2D.Float(0, 0);
 				}
 			}
 		}

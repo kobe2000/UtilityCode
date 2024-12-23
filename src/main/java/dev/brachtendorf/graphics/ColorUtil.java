@@ -1,7 +1,8 @@
 package dev.brachtendorf.graphics;
 
 import dev.brachtendorf.MathUtil;
-import javafx.scene.paint.Color;
+
+import java.awt.*;
 
 /**
  * @author Kilian
@@ -36,10 +37,7 @@ public class ColorUtil {
 	 * @since 1.0.0 com.github.kilianB
 	 */
 	public static java.awt.Color fxToAwtColor(Color fxColor){
-		return new java.awt.Color((float)fxColor.getRed(),
-				(float)fxColor.getGreen(),
-				(float)fxColor.getBlue(),
-				(float)fxColor.getOpacity());
+		return fxColor;
 	}
 	//@formatter:on
 
@@ -51,29 +49,26 @@ public class ColorUtil {
 	 * @since 1.0.0 com.github.kilianB
 	 */
 	public static Color awtToFxColor(java.awt.Color awtColor) {
-		return new Color(awtColor.getRed()/255d,
-				awtColor.getGreen()/255d,
-				awtColor.getBlue()/255d,
-				awtColor.getAlpha()/255d);
+		return awtColor;
 	}
 	//@formatter:on
 
 	/**
 	 * Convert an argb value to it's individual components in range of 0 - 255
-	 * 
+	 *
 	 * @param argb values as int
 	 * @return [0] Alpha, [1] Red, [2] Green, [3] Blue
 	 * @since 1.0.0 com.github.kilianB
-	 * 
+	 *
 	 */
 	public static int[] argbToComponents(int argb) {
-		return new int[] { argb >> 24 & 0xFF, argb >> 16 & 0xFF, argb >> 8 & 0xFF, argb & 0xFF };
+		return new int[]{argb >> 24 & 0xFF, argb >> 16 & 0xFF, argb >> 8 & 0xFF, argb & 0xFF};
 	}
 
 	/**
 	 * Converts the components to a single int argb representation. The individual
 	 * values are not range checked
-	 * 
+	 *
 	 * @param alpha in range of 0 - 255
 	 * @param red   in range of 0 - 255
 	 * @param green in range of 0 - 255
@@ -88,63 +83,38 @@ public class ColorUtil {
 	/**
 	 * Convert an argb value (alpha 24,red 16, green 8, blue 0) into a java fx
 	 * color.
-	 * 
+	 *
 	 * @param argb the argb color as an int
 	 * @return The JavaFX Color
 	 * @since 1.0.0 com.github.kilianB
 	 */
-	public static javafx.scene.paint.Color argbToFXColor(int argb) {
+	public static Color argbToFXColor(int argb) {
 		int[] components = argbToComponents(argb);
-		return new javafx.scene.paint.Color(components[1] / 255d, components[2] / 255d, components[3] / 255d,
-				components[0] / 255d);
+		return new Color(components[1], components[2], components[3], components[0]);
 	}
 
 	/**
 	 * Return the hexcode of a color
-	 * 
+	 *
 	 * @param color the color to convert
 	 * @return a hex representation of the color
 	 * @since 1.0.0 com.github.kilianB
 	 */
 	public static String fxToHex(Color color) {
 		return String.format("#%02X%02X%02X", (int) (color.getRed() * 255), (int) (color.getGreen() * 255),
-				(int) (color.getBlue() * 255));
+			(int) (color.getBlue() * 255));
 	}
 
 	// https://stackoverflow.com/a/2103608/3244464
 	// https://www.compuphase.com/cmetric.htm
-	/**
-	 * Compute a distance metric of 2 colors. The distance of a color is greater the
-	 * further away two colors are.
-	 * <p>
-	 * 
-	 * Identical colors will return a distance of 0.
-	 * 
-	 * @param c1 The first color
-	 * @param c2 The second color
-	 * @return a double value indicating the distance of two colors
-	 * @since 1.0.0 com.github.kilianB
-	 */
-	public static double distance(Color c1, Color c2) {
-		double rmean = (c1.getRed() * 255 + c2.getRed() * 255) / 2;
-		int r = (int) (c1.getRed() * 255 - c2.getRed() * 255);
-		int g = (int) (c1.getGreen() * 255 - c2.getGreen() * 255);
-		int b = (int) (c1.getBlue() * 255 - c2.getBlue() * 255);
-		double weightR = 2 + rmean / 256;
-		double weightG = 4.0;
-		double weightB = 2 + (255 - rmean) / 256;
-		return Math.sqrt(weightR * r * r + weightG * g * g + weightB * b * b);
-	}
 
-	// https://stackoverflow.com/a/2103608/3244464
-	// https://www.compuphase.com/cmetric.htm
 	/**
 	 * Compute a distance metric of 2 colors. The distance of a color is greater the
 	 * further away two colors are.
 	 * <p>
-	 * 
+	 *
 	 * Identical colors will return a distance of 0.
-	 * 
+	 *
 	 * @param c1 The first color
 	 * @param c2 The second color
 	 * @return a double value indicating the distance of two colors
@@ -163,18 +133,7 @@ public class ColorUtil {
 
 	/**
 	 * Get the Y (luma component) of the YCrCb color model
-	 * 
-	 * @param c an javaFX color
-	 * @return the luma component in the tange [0-1]
-	 * @since 1.3.2 com.github.kilianB
-	 */
-	public static double getLuma(Color c) {
-		return LUMA_RED * c.getRed() + LUMA_GREEN * c.getGreen() + LUMA_BLUE * c.getBlue();
-	}
-
-	/**
-	 * Get the Y (luma component) of the YCrCb color model
-	 * 
+	 *
 	 * @param c an awt color
 	 * @return the luma component in the tange [0-255]
 	 * @since 1.3.2 com.github.kilianB
@@ -188,27 +147,7 @@ public class ColorUtil {
 	 * Return either white or black depending on the supplied color to guarantee
 	 * readability. The contrast color is assumed to be used as text overlay on top
 	 * of the input color.
-	 * 
-	 * @param input the color of the background
-	 * @return the color (white or black) of the foreground whichever guarantees
-	 *         more readability.
-	 * @since 1.0.0 com.github.kilianB
-	 */
-	public static Color getContrastColor(Color input) {
-		// Luminascense
-		double y = getLuma(input);
-		if (y > 0.55) {
-			return Color.BLACK;
-		} else {
-			return Color.WHITE;
-		}
-	}
-
-	/**
-	 * Return either white or black depending on the supplied color to guarantee
-	 * readability. The contrast color is assumed to be used as text overlay on top
-	 * of the input color.
-	 * 
+	 *
 	 * @param input the color of the background
 	 * @return the color (white or black) of the foreground whichever guarantees
 	 *         more readability.
@@ -228,18 +167,18 @@ public class ColorUtil {
 
 		/**
 		 * Return a default palette from blue to orange using rgba interpolation
-		 * 
+		 *
 		 * @param numColors the number of colors present in the returned array
 		 * @return A color array with
 		 * @since 1.0.0 com.github.kilianB
 		 */
 		public static Color[] getPalette(int numColors) {
-			return getPalette(numColors, Color.web("#003f5c"), Color.web("#ffa600"));
+			return getPalette(numColors, Color.decode("#003f5c"), Color.decode("#ffa600"));
 		}
 
 		/**
 		 * Create a color palette using rgba interpolation
-		 * 
+		 *
 		 * @param numColors  The number of colors present in the returned array
 		 * @param startColor The color of the first index
 		 * @param endColor   The color of the last index
@@ -251,27 +190,41 @@ public class ColorUtil {
 			Color[] cols = new Color[numColors];
 			for (int i = 0; i < numColors; i++) {
 				double factor = i / (double) numColors;
-				cols[i] = startColor.interpolate(endColor, factor);
+				cols[i] = interpolate(startColor, endColor, factor);
 			}
 			return cols;
+		}
+
+		private static Color interpolate(Color startColor, Color endColor, double factor) {
+			if (factor < 0) return startColor;
+			if (factor > 1) return endColor;
+			return new Color(
+				interpolate(startColor.getRed(), endColor.getRed(), factor),
+				interpolate(startColor.getGreen(), endColor.getGreen(), factor),
+				interpolate(startColor.getBlue(), endColor.getBlue(), factor)
+			);
+		}
+
+		private static int interpolate(int start, int end, double factor) {
+			return (int) (start + (end - start) * factor);
 		}
 
 		/**
 		 * Create a color palette with the hue component being altered instead of the
 		 * individual rgb components. {@link #getPalette(int)}.
-		 * 
+		 *
 		 * @param numColors The number of colors present in the returned array
 		 * @return An array containing the interpolated colors
 		 * @since 1.0.0 com.github.kilianB
 		 */
 		public static Color[] getPaletteHue(int numColors) {
-			return getPaletteHue(numColors, Color.web("#003f5c"), Color.web("#ffa600"));
+			return getPaletteHue(numColors, Color.decode("#003f5c"), Color.decode("#ffa600"));
 		}
 
 		/**
 		 * Create a color palette with the hue component being altered instead of the
 		 * individual rgb components. {@link #getPalette(int)}.
-		 * 
+		 *
 		 * @param numColors  The number of colors present in the returned array
 		 * @param startColor The color of the first index
 		 * @param endColor   The color of the last index
@@ -280,15 +233,17 @@ public class ColorUtil {
 		 */
 		public static Color[] getPaletteHue(int numColors, Color startColor, Color endColor) {
 
-			double hDelta = (endColor.getHue() - startColor.getHue()) / numColors;
-			double sDelta = (endColor.getSaturation() - startColor.getSaturation()) / numColors;
-			double bDelta = (endColor.getBrightness() - startColor.getBrightness()) / numColors;
+			float[] startHsb = Color.RGBtoHSB(startColor.getRed(), startColor.getGreen(), startColor.getBlue(), null);
+			float[] endHsb = new float[3];
+			double hDelta = (endHsb[0] - startHsb[0]) / numColors;
+			double sDelta = (endHsb[1] - startHsb[1]) / numColors;
+			double bDelta = (endHsb[2] - startHsb[2]) / numColors;
 
 			Color[] cols = new Color[numColors];
 			for (int i = 0; i < numColors; i++) {
 
-				double newSat = startColor.getSaturation() + sDelta * i;
-				double newBrightness = startColor.getBrightness() + bDelta * i;
+				double newSat = startHsb[1] + sDelta * i;
+				double newBrightness = startHsb[2] + bDelta * i;
 
 				// Wrap around
 				if (newSat > 1) {
@@ -302,8 +257,7 @@ public class ColorUtil {
 				} else if (newBrightness < 0) {
 					newBrightness = 1 - newBrightness;
 				}
-
-				cols[i] = Color.hsb(startColor.getHue() + hDelta * i, newSat, newBrightness);
+				cols[i] = new Color(Color.HSBtoRGB((float) (startHsb[0] + hDelta * i), (float) newSat, (float) newBrightness));
 			}
 			return cols;
 		}
